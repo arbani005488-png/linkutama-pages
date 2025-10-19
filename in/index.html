@@ -3,47 +3,41 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Admin Redirect</title>
-  <style>
-    body { margin:0; font-family:system-ui,Segoe UI,Roboto,Arial; background:#0f1115; color:#e6e6e6; }
-    .wrap{ max-width:900px; margin:40px auto; padding:0 16px; }
-    .title{ font-weight:700; font-size:28px; }
-    .card{ background:#141821; border:1px solid #232836; border-radius:18px; padding:18px; box-shadow:0 10px 30px rgba(0,0,0,.25); }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; }
-    input{ background:#0f1116; border:1px solid #2a3142; color:#fff; border-radius:12px; padding:10px; outline:none; }
-    .btn{ border:0; border-radius:12px; padding:10px 14px; font-weight:600; cursor:pointer; background:linear-gradient(180deg,#d5aa53,#b88632 40%,#6e4c1a); color:#121212; }
-    table{ width:100%; border-collapse:collapse; margin-top:12px; }
-    th,td{ padding:10px; border-bottom:1px solid #232836; }
-    th{ text-align:left; color:#b6c0cf; font-weight:600; }
-  </style>
+  <title>Admin Redirect - SKATWIN</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="admin.js"></script>
 </head>
 <body>
-  <div class="wrap">
-    <div class="title">Admin Redirect</div>
+  <main>
+    <!-- Login Section -->
+    <section id="login" class="card">
+      <h1>Admin Redirect</h1>
+      <input id="user" placeholder="Username" type="text" />
+      <input id="pass" placeholder="Password" type="password" />
+      <button id="btnLogin" class="btn">Login</button>
+    </section>
 
-    <!-- LOGIN -->
-    <div id="login" class="card" style="margin-top:14px;">
-      <div class="row">
-        <input id="user" placeholder="Username" value="admin"/>
-        <input id="pass" type="password" placeholder="Password"/>
-        <button class="btn" id="btnLogin">Login</button>
-      </div>
-      <div style="margin-top:8px;color:#999;font-size:13px;">Gunakan kredensial admin yang di-set di Environment Variables.</div>
-    </div>
+    <!-- App Section -->
+    <section id="app" class="card" style="display:none;">
+      <h2>Kelola Link Alternatif</h2>
 
-    <!-- DASHBOARD -->
-    <div id="app" class="card" style="margin-top:14px; display:none;">
-      <div class="row">
-        <input id="newUrl" placeholder="https://..." style="flex:1"/>
-        <input id="newLabel" placeholder="Label (opsional)" style="width:220px"/>
-        <button class="btn" id="btnAdd">Tambah</button>
+      <div class="add-row">
+        <input id="newLabel" placeholder="Nama label..." />
+        <input id="newUrl" placeholder="https://example.com" />
+        <button id="btnAdd" class="btn">Tambah</button>
       </div>
+
       <table id="tbl">
-        <thead><tr><th>Label</th><th>URL</th><th>Aksi</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Label</th><th>URL</th><th>Aksi</th>
+          </tr>
+        </thead>
         <tbody></tbody>
       </table>
-    </div>
-  </div>
-  <script src="admin.js"></script>
+    </section>
+  </main>
 </body>
 </html>
