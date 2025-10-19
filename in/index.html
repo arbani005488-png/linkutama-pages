@@ -1,64 +1,52 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Redirect</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0f0f0f;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .box {
-      background: #161616;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0,0,0,.5);
-      width: 320px;
-    }
-    h1 {
-      text-align: center;
-      color: #d5aa53;
-      margin-bottom: 20px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 10px;
-      background: #222;
-      color: #fff;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(to bottom, #d5aa53, #b88632 40%, #6e4c1a);
-      border: none;
-      border-radius: 10px;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    body { margin:0; font-family:system-ui,Segoe UI,Roboto,Arial; background:#0f1115; color:#e6e6e6; }
+    .wrap{ max-width:960px; margin:40px auto; padding:0 16px; }
+    .title{ font-weight:700; font-size:28px; }
+    .card{ background:#141821; border:1px solid #232836; border-radius:18px; padding:18px; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+    .row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    input{ background:#0f1116; border:1px solid #2a3142; color:#fff; border-radius:12px; padding:10px 12px; outline:none; }
+    input:focus{ border-color:#3a7bd5; }
+    .btn{ border:0; border-radius:12px; padding:10px 14px; font-weight:600; cursor:pointer; background:linear-gradient(180deg,#d5aa53,#b88632 40%, #6e4c1a); color:#121212; }
+    table{ width:100%; border-collapse:collapse; margin-top:10px; }
+    th,td{ padding:10px; border-bottom:1px solid #232836; }
+    th{ text-align:left; color:#b6c0cf; font-weight:600; }
+    .muted{ color:#9aa4b2; font-size:13px; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Admin Redirect</h1>
-    <input type="text" id="user" placeholder="Username" value="admin">
-    <input type="password" id="pass" placeholder="Password" value="">
-    <button id="btnLogin">Login</button>
-    <p style="margin-top:10px;font-size:13px;color:#aaa;text-align:center">
-      Gunakan kredensial admin yang di-set di Environment Variables.
-    </p>
+  <div class="wrap">
+    <div class="title">Admin Redirect</div>
+
+    <!-- LOGIN -->
+    <div id="login" class="card" style="margin-top:14px;">
+      <div class="row">
+        <input id="user" placeholder="Username" />
+        <input id="pass" type="password" placeholder="Password" />
+        <button class="btn" id="btnLogin">Login</button>
+      </div>
+      <div class="muted" style="margin-top:8px;">Gunakan kredensial admin yang di-set di Environment Variables.</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="app" class="card" style="margin-top:14px; display:none;">
+      <div class="row">
+        <input id="newUrl" placeholder="https://…" style="flex:1" />
+        <input id="newLabel" placeholder="Label (opsional)" style="width:240px" />
+        <button class="btn" id="btnAdd">Tambah</button>
+      </div>
+      <table id="tbl">
+        <thead><tr><th>Label</th><th>URL</th><th style="width:160px;">Aksi</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 
-  <script src="admin.js"></script>
+  <script src="/in/admin.js" type="module"></script>
 </body>
 </html>
