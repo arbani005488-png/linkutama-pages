@@ -1,114 +1,131 @@
-// ======== ADMIN DASHBOARD SCRIPT ========
-// Versi fix final: support login, add, edit (update), delete
+// ===== Admin Dashboard (final) =====
+// login, list, tambah, update, hapus – stabil untuk Cloudflare Pages
 
 const $ = s => document.querySelector(s);
 const loginBox = $('#login');
-const appBox = $('#app');
+const appBox   = $('#app');
 
-// ===== API Helper =====
+// ---------- helper ----------
 async function api(path, opts = {}) {
   const r = await fetch(path, opts);
-  const data = await r.json().catch(() => ({}));
-  return { status: r.status, data, r };
+  let data = {};
+  try { data = await r.json(); } catch (_) {}
+  return { status: r.status, data };
 }
 
-async function login(username, password) {
+function toast(msg){ alert(msg); }
+
+// ---------- API wrappers ----------
+async function doLogin(username, password) {
   return api('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ username, password })
   });
 }
 
-async function listLinks() { return api('/api/links'); }
+async function listLinks() {
+  return api('/api/links');
+}
 
 async function addLink(url, label) {
   return api('/api/links', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ url, label })
   });
 }
 
-// ✅ fallback update pakai POST ?update=1 (agar aman di Cloudflare)
+// gunakan endpoint POST khusus agar stabil di Pages
 async function updLink(id, url, label) {
-  return api(`/api/links/${id}?update=1`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url, label })
+  return api('/api/links-update', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ id, url, label })
   });
 }
 
-// delete juga pakai GET ?delete=1 (biar aman di Pages)
 async function delLink(id) {
-  return api(`/api/links/${id}?delete=1`);
+  return api('/api/links-delete', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ id })
+  });
 }
 
-// ===== LOGIN EVENT =====
+// ---------- UI logic ----------
 $('#btnLogin').addEventListener('click', async () => {
   const u = $('#user').value.trim();
   const p = $('#pass').value;
-  const { status, data } = await login(u, p);
+  const { status, data } = await doLogin(u, p);
   if (status === 200 && data.ok) {
     loginBox.style.display = 'none';
-    appBox.style.display = 'block';
+    appBox.style.display   = 'block';
     refresh();
   } else {
-    alert(data.error || 'Login gagal');
+    toast(data.error || 'Login gagal');
   }
 });
 
-// ===== ADD LINK EVENT =====
 $('#btnAdd').addEventListener('click', async () => {
-  const url = $('#newUrl').value.trim();
+  const url   = $('#newUrl').value.trim();
   const label = $('#newLabel').value.trim();
-  if (!/^https?:\/\//i.test(url)) return alert('URL harus diawali http(s)://');
+  if (!/^https?:\/\//i.test(url)) return toast('URL harus diawali http(s)://');
+
   const { data } = await addLink(url, label);
-  if (!data.ok) return alert(data.error || 'Gagal menambah link');
-  $('#newUrl').value = ''; $('#newLabel').value = '';
+  if (!data.ok) return toast(data.error || 'Gagal menambah link');
+
+  $('#newUrl').value = '';
+  $('#newLabel').value = '';
   refresh();
 });
 
-// ===== REFRESH TABLE =====
 async function refresh() {
   const { status, data } = await listLinks();
   if (status !== 200 || !data.ok) {
-    alert('Sesi login habis / belum login.');
+    toast('Sesi habis / belum login.');
     loginBox.style.display = 'block';
-    appBox.style.display = 'none';
+    appBox.style.display   = 'none';
     return;
   }
+
   const tb = document.querySelector('#tbl tbody');
   tb.innerHTML = '';
   data.links.forEach(row => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><input data-k="label" data-id="${row.id}" value="${row.label || ''}"/></td>
-      <td><input data-k="url" data-id="${row.id}" value="${row.url}" style="width:100%"/></td>
+      <td><input data-k="label" data-id="${row.id}" value="${row.label || ''}" /></td>
+      <td><input data-k="url"   data-id="${row.id}" value="${row.url}" style="width:100%" /></td>
       <td>
         <button class="btn" data-act="save" data-id="${row.id}">Simpan</button>
-        <button class="btn" data-act="del" data-id="${row.id}" style="margin-left:6px;">Hapus</button>
+        <button class="btn" data-act="del"  data-id="${row.id}" style="margin-left:6px;">Hapus</button>
       </td>`;
     tb.appendChild(tr);
   });
 }
 
-// ===== UPDATE & DELETE EVENT =====
-document.addEventListener('click', async e => {
-  const b = e.target.closest('button'); if (!b) return;
-  const id = b.getAttribute('data-id');
+// event delegation untuk tombol Simpan/Hapus
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+
+  const id  = b.getAttribute('data-id');
   const act = b.getAttribute('data-act');
 
   if (act === 'save') {
-    const url = document.querySelector(`input[data-k="url"][data-id="${id}"]`).value.trim();
+    const url   = document.querySelector(`input[data-k="url"][data-id="${id}"]`).value.trim();
     const label = document.querySelector(`input[data-k="label"][data-id="${id}"]`).value.trim();
+    if (url && !/^https?:\/\//i.test(url)) return toast('URL harus diawali http(s)://');
+
     const { data } = await updLink(id, url, label);
-    if (!data.ok) alert(data.error || 'Gagal menyimpan perubahan'); else refresh();
+    if (!data.ok) return toast(data.error || 'Gagal menyimpan perubahan');
+    refresh();
   }
 
   if (act === 'del') {
     if (!confirm('Hapus link ini?')) return;
     const { data } = await delLink(id);
-    if (!data.ok) alert(data.error || 'Gagal menghapus link'); else refresh();
+    if (!data.ok) return toast(data.error || 'Gagal menghapus link');
+    refresh();
   }
 });
