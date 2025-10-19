@@ -1,43 +1,55 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Admin Redirect</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>skatwin-alternatif-pages-dev</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="admin.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script defer src="/in/admin.js"></script>
 </head>
 <body>
-  <main>
-    <!-- Login Section -->
-    <section id="login" class="card">
-      <h1>Login</h1>
-      <input id="user" placeholder="Username" type="text" />
-      <input id="pass" placeholder="Password" type="password" />
-      <button id="btnLogin" class="btn">Login</button>
-    </section>
+<main>
+<!-- Login Section -->
+<section id="login" class="card">
+<h1>LOGIN</h1>
+<input id="user" placeholder="Username" type="text" />
+<input id="pass" placeholder="Password" type="password" />
+<button id="btnLogin" class="btn">Login</button>
+</section>
 
-    <!-- App Section -->
-    <section id="app" class="card" style="display:none;">
-      <h2>Kelola Link Alternatif - SKATWIN</h2>
 
-      <div class="add-row">
-        <input id="newLabel" placeholder="Nama label..." />
-        <input id="newUrl" placeholder="https://example.com" />
-        <button id="btnAdd" class="btn">Tambah</button>
-      </div>
+<!-- App Section -->
+<section id="app" class="card" style="display:none;">
+<div class="topbar">
+<h2>Kelola Link Alternatif</h2>
+<div class="top-actions">
+<a class="btn btn-alt" href="/alternatif" target="_blank" rel="noopener">Cek Redirect</a>
+<button id="btnLogout" class="btn btn-logout">Logout</button>
+</div>
+</div>
 
-      <table id="tbl">
-        <thead>
-          <tr>
-            <th>Label</th><th>URL</th><th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-  </main>
+
+<div class="add-row">
+<input id="newLabel" placeholder="Nama label" />
+<input id="newUrl" placeholder="Gunakan ( https:// )" />
+<button id="btnAdd" class="btn">Tambah</button>
+</div>
+
+
+<table id="tbl">
+<thead>
+<tr><th>Label</th><th>URL</th><th style="width:170px">Aksi</th></tr>
+</thead>
+<tbody></tbody>
+</table>
+</section>
+</main>
+
+
+<!-- Toast container -->
+<div id="toastbox" class="toastbox" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
